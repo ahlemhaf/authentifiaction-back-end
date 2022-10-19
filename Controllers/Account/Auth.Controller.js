@@ -48,13 +48,12 @@ exports.register = async (req, res) => {
          N'hésitez pas à me contacter en cas de besoin.<br>
          Cordialement .
         
-        
         `
       })
       res.send({message:'registered successfully'})
     }
   } catch (error) {
-    res.status(500).send({message: error.message || 'erreur serveur'})
+    res.status(500).send('erreur serveur')
   }
 
 }
