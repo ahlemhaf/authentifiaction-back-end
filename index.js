@@ -4,12 +4,10 @@ const morgan = require('morgan');
 const bodyParser=require('body-parser')
 const dotenv=require('dotenv')
 const authentification=require('./Routes/AuthRoutes')
-require('./DataBase/Connect')
-require('./Passport/bearer')
 
 dotenv.config()
-
-
+require('./Passport/bearer')
+require('./DataBase/Connect')
 
 const app = express();
 app.use(cors());
