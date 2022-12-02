@@ -5,6 +5,7 @@ const bodyParser=require('body-parser')
 const dotenv=require('dotenv')
 const authentification=require('./Routes/AuthRoutes')
 const user=require('./Routes/ClientRoutes')
+const path = require('path');
 /**
  * 
  */
@@ -18,14 +19,23 @@ require('./DataBase/Connect')
 const app = express();
 app.use(cors());
 app.use(morgan('combined'));
-app.use(bodyParser.json()) ;
+app.use(bodyParser.json({limit: 50*1024*1024}));
+app.use(bodyParser.urlencoded({limit: "52428800", extended: true, parameterLimit:50000}));
+app.use(express.json());
+app.set('view engine', 'ejs');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 /**
  * 
  */
 
+const authentification=require('./Routes/AuthRoutes')
+const user=require('./Routes/ClientRoutes')
+const course=require('./Routes/CourseRoutes');
 app.use(authentification)
 app.use(user)
+app.use(course)
 
 
 
