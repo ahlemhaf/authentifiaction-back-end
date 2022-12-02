@@ -12,7 +12,7 @@ exports.register = async (req, res) => {
   try {
     const Found = await User.findOne({ email: req.body.email })
     if (Found !== null) {
-      res.status(400).send('email déja existe !');
+      res.status(400).send('email is used !');
     }
     else {
       const salt = bcrypt.genSaltSync(10);
@@ -31,21 +31,24 @@ exports.register = async (req, res) => {
         from: `${process.env.email}`,
         to: `${req.body.email}`,
         subject: "Inscription",
-        attachments: [
-          {
-            path: path.resolve('./welcome.png')
-          }
-        ],
-        html: `<h1>Merci de nous avoir rejoint!</h1> 
-        <p> Bonjour  ${req.body.genre} ${req.body.lastName},vous etes officiellement un membre dans notre plateforme E-learning,
-        nous sommes fiers de vous compter parmi nous ,Merci encore pour votre confiance !</p>
+        // attachments: [
+        //   {
+        //     path: path.resolve('./welcome.png')
+        //   }
+        // ],
+        html: `<h1>Thanks For Joining Us!</h1> 
+        <p> Hello  ${req.body.firstName} ${req.body.lastName},you are now a member in our <br><br>
+         E-learning platform ,we are proud to have you among <br><br>
+         us ,thanks again for your trust!</p>
 
-         Vous pouvez accéder dés mainteneant à la plate-forme via vos coordonnées :<br><br>
+         You can now join the platform :<br><br>
 
-         votre email est: ${req.body.email}<br>
-         votre mot de passe est :${req.body.password}<br>
-         N'hésitez pas à me contacter en cas de besoin.<br>
-         Cordialement .
+         Your email: ${req.body.email}<br>
+         Your password :${req.body.password}<br>
+   Dont't hesitate to contact us if needed.<br>
+         Sincerely .<br>
+         Hafsoni Ahlem<br>
+         Manager of Academia .
         
         `
       })
@@ -71,10 +74,10 @@ exports.login = async (req, res) => {
         userId:user._id
       }
       var token = jwt.sign(data, process.env.JWT_SECRET, { expiresIn: '1d' });
-      res.status(200).send({ message: 'connecté avec succès', token: token })
+      res.status(200).send({ message: 'connected successfully !', token: token })
     }
     else {
-      res.status(400).send(' vérifier votre email et votre mot de passe')
+      res.status(400).send(' verify your email address and your password please!')
     }
   }
   catch (error) {
@@ -108,18 +111,17 @@ exports.forgetpassword = async (req, res) => {
       await transporter.sendMail({
         from: `${process.env.email}`,
         to: `${req.body.email}`,
-        subject: "réinitialisation du mot de passe",
+        subject: "Reset your password",
 
-        html: `<h1>réinitialisation du mot de passe</h1> 
-      <p> Bonjour  ${req.body.genre} ${req.body.lastName},voici le lien pour réinitialiser
-       votre mot de passe! </p> <br>
+        html: `<h1>reset your password </h1> 
+      <p> Bonjour  ${req.body.firsName} ${req.body.lastName},this's the link to reset your password! </p> <br>
        <a href="${link}">reset link</a>
       `
       })
       res.send({ message: 'link sent successfully' })
 
     } else {
-      res.send(`utilisateur n'existe pas `)
+      res.send(`user not found!`)
     }
 
   } catch (error) {

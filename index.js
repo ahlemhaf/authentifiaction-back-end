@@ -5,6 +5,7 @@ const bodyParser=require('body-parser')
 const dotenv=require('dotenv')
 const authentification=require('./Routes/AuthRoutes')
 const user=require('./Routes/ClientRoutes')
+const course=require('./Routes/CourseRoutes')
 const path = require('path');
 /**
  * 
@@ -30,9 +31,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
  * 
  */
 
-const authentification=require('./Routes/AuthRoutes')
-const user=require('./Routes/ClientRoutes')
-const course=require('./Routes/CourseRoutes');
+// const authentification=require('./Routes/AuthRoutes')
+// const user=require('./Routes/ClientRoutes')
+// const course=require('./Routes/CourseRoutes');
+
+
 app.use(authentification)
 app.use(user)
 app.use(course)

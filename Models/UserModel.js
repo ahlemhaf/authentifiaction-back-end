@@ -9,7 +9,7 @@ const UserSchema=new Schema({
   password:{type:String,required:true},
   passwordHashed:{type:String ,required: true},
   address:{type:String,required:true},
-  genre:{type:String,required:true},
+  // genre:{type:String,required:true},
   role:{type:String , default:'client'},
 },
 {
