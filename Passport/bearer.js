@@ -4,8 +4,7 @@ const User=require('../Models/UserModel')
 const jwt = require("jsonwebtoken");
 
 passport.use(new BearerStrategy((token, done) => {
-    const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decodedData);
+    const decodedData = jwt.verify(token, process.env.JWT_SECRET)
      User.findOne({ _id: decodedData.userId }, function (err, user) {
        if (err) {return done(err); }
        if (!user) {return done(null, false); }
