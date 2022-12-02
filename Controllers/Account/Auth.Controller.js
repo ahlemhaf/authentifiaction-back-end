@@ -88,7 +88,7 @@ exports.forgetpassword = async (req, res) => {
     console.log(user);
     if (user) {
       const resetToken = randomString.generate(20);
-      const reset = {
+      const reset = { 
         userId: user._id,
         token: resetToken
       }
