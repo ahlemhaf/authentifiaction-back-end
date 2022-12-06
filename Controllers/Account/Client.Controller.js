@@ -1,4 +1,4 @@
-const User=require('../../Models/UserModel')
+const User = require('../../Models/UserModel')
 const bcrypt = require('bcryptjs')
 
 
@@ -6,13 +6,13 @@ exports.adduser = async (req, res) => {
     try {
         const Found = await User.findOne({ email: req.body.email })
         if (Found !== null) {
-          res.status(400).send({message:'email is used !'});
+            res.status(400).send({ message: 'email is used !' });
         }
         else {
-          const salt = bcrypt.genSaltSync(10);
-          req.body.passwordHashed = bcrypt.hashSync(req.body.password, salt);
-          await User.create(req.body)
-          res.status(201).send({message:'Client added successfully!'})
+            const salt = bcrypt.genSaltSync(10);
+            req.body.passwordHashed = bcrypt.hashSync(req.body.password, salt);
+            await User.create(req.body)
+            res.status(201).send({ message: 'Client added successfully!' })
         }
     } catch (error) {
         res.status(500).send({ message: error.message || 'Error server' })

@@ -2,7 +2,6 @@ const User = require('../../Models/UserModel')
 const nodemailer = require("nodemailer");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const path = require('path');
 const Token = require('../../Models/token')
 const randomString = require('randomstring')
 /**
@@ -12,12 +11,11 @@ exports.register = async (req, res) => {
   try {
     const Found = await User.findOne({ email: req.body.email })
     if (Found !== null) {
-      res.status(400).send('email is used !');
+      res.status(400).send({ message: 'E-mail déjà utilisé!' });
     }
     else {
       const salt = bcrypt.genSaltSync(10);
       req.body.passwordHashed = bcrypt.hashSync(req.body.password, salt);
-      await User.create(req.body)
       let transporter = nodemailer.createTransport({
         host: process.env.host,
         port: process.env.port,
@@ -31,57 +29,48 @@ exports.register = async (req, res) => {
         from: `${process.env.email}`,
         to: `${req.body.email}`,
         subject: "Inscription",
-        // attachments: [
-        //   {
-        //     path: path.resolve('./welcome.png')
-        //   }
-        // ],
         html: `<h1>Thanks For Joining Us!</h1> 
         <p> Hello  ${req.body.firstName} ${req.body.lastName},you are now a member in our <br><br>
-         E-learning platform ,we are proud to have you among <br><br>
-         us ,thanks again for your trust!</p>
+        E-learning platform ,we are proud to have you among <br><br>
+        us ,thanks again for your trust!</p>
 
-         You can now join the platform :<br><br>
+        You can now join the platform :<br><br>
 
-         Your email: ${req.body.email}<br>
-         Your password :${req.body.password}<br>
-   Dont't hesitate to contact us if needed.<br>
-         Sincerely .<br>
-         Hafsoni Ahlem<br>
-         Manager of Academia .
+        Your email: ${req.body.email}<br>
+        Your password :${req.body.password}<br>
+        Dont't hesitate to contact us if needed.<br>
+        Sincerely .<br>
+        Hafsoni Ahlem<br>
+        Manager of Academia .
         
         `
       })
-      res.status(201).send({ message: 'registered successfully' })
+      await User.create(req.body)
+      res.send({ message: 'Inscrit avec succés!' })
     }
   } catch (error) {
-    res.status(500).send({ message:error.message || "An error occured" });
+    res.status(500).send({ message: error.message || "An error occured" });
   }
 
 }
 
-/**
- 
-
-
- */
 exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email })
-    if (user != null && (await bcrypt.compare(req.body.password,user.passwordHashed))) {
+    if (user != null && (await bcrypt.compare(req.body.password, user.passwordHashed))) {
       const data = {
-        useremail:user.email,
-        userId:user._id
+        useremail: user.email,
+        userId: user._id
       }
       var token = jwt.sign(data, process.env.JWT_SECRET, { expiresIn: '1d' });
-      res.status(200).send({ message: 'connected successfully !', token: token })
+      res.status(200).send({ message: 'connecté avec succés!', token: token })
     }
     else {
-      res.status(400).send(' verify your email address and your password please!')
+      res.status(400).send({ message: ' Verifier votre email ou mot de passe!' })
     }
   }
   catch (error) {
-    res.status(500).send({ message:error.message || "An error occured" });
+    res.status(500).send({ message: error.message || "An error occured" });
   }
 }
 
@@ -91,7 +80,7 @@ exports.forgetpassword = async (req, res) => {
     console.log(user);
     if (user) {
       const resetToken = randomString.generate(20);
-      const reset = { 
+      const reset = {
         userId: user._id,
         token: resetToken
       }
@@ -121,7 +110,7 @@ exports.forgetpassword = async (req, res) => {
       res.send({ message: 'link sent successfully' })
 
     } else {
-      res.send(`user not found!`)
+      res.status(400).send({ message: `user not found!` })
     }
 
   } catch (error) {
